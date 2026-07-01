@@ -1,0 +1,15 @@
+[2026-06-29 04:49:43] Error [2]: Undefined array key "project_stunting" in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/sections/views_sidebar.php on line 110
+[2026-06-29 04:49:54] Error [2]: Undefined array key "project_stunting" in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/sections/views_sidebar.php on line 110
+[2026-06-29 04:49:54] Error [2]: Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/sections/views_sidebar.php on line 110
+[2026-06-29 04:49:54] Error [2]: Undefined array key "project_stunting" in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/sections/views_sidebar.php on line 145
+[2026-06-29 04:49:54] Error [2]: Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/sections/views_sidebar.php on line 145
+[2026-06-29 04:49:54] Error [2]: Undefined array key "project_stunting" in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/sections/views_sidebar.php on line 145
+[2026-06-29 04:49:54] Error [2]: Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/sections/views_sidebar.php on line 145
+[2026-06-29 04:49:54] Error [2]: Undefined array key "project_stunting" in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/sections/views_sidebar.php on line 159
+[2026-06-29 04:49:54] Error [2]: Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/sections/views_sidebar.php on line 159
+[2026-06-29 04:49:54] Error [2]: Undefined array key "project_stunting" in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/sections/views_sidebar.php on line 159
+[2026-06-29 04:49:54] Error [2]: Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/sections/views_sidebar.php on line 159
+[2026-06-29 07:55:00] Error [2]: Undefined array key "project_stunting" in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/views/permission.php on line 83
+[2026-06-29 07:55:00] Error [2]: Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/views/permission.php on line 83
+[2026-06-29 07:55:08] Error [2]: Undefined array key "project_stunting" in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/views/permission.php on line 83
+[2026-06-29 07:55:08] Error [2]: Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/apps/website/tugas/ksu_st_karolus/views/permission.php on line 83
