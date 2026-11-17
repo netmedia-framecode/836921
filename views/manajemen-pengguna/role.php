@@ -23,7 +23,7 @@ require_once("../../templates/views_top.php"); ?>
             <span>Back</span>
           </a>
         </div>
-        <?php if (canAction('create')) { ?>
+        <?php if (canAction('create', 'manajemen-pengguna/role')) { ?>
           <div class="d-flex align-items-center gap-2 page-header-right-items-wrapper">
             <a href="add-role" class="btn btn-primary">
               <i class="feather-plus me-2"></i>
@@ -63,12 +63,12 @@ require_once("../../templates/views_top.php"); ?>
                     <td><?= $data['role'] ?></td>
                     <td>
                       <div class="hstack gap-2 justify-content-center">
-                        <?php if (canAction('edit')) { ?>
+                        <?php if (canAction('edit', 'manajemen-pengguna/role')) { ?>
                           <a href="edit-role?p=<?= $data['id_role']?>" class="btn btn-warning btn-sm">
                             <i class="bi bi-pencil-square"></i>
                           </a>
                         <?php } ?>
-                        <?php if (canAction('delete')) { ?>
+                        <?php if (canAction('delete', 'manajemen-pengguna/role')) { ?>
                           <form action="" method="post">
                             <input type="hidden" name="id_role" value="<?= $data['id_role'] ?>">
                             <input type="hidden" name="role" value="<?= $data['role'] ?>">

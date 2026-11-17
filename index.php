@@ -2,8 +2,6 @@
 require_once("config/Base.php");
 
 $infoQuery = mysqli_query($conn, "
-  SELECT 'Berita' AS tipe, judul, tgl_buat AS tanggal FROM berita
-  UNION ALL
   SELECT 'Pengumuman' AS tipe, judul, tgl_posting AS tanggal FROM pengumuman
   ORDER BY tanggal DESC
   LIMIT 3
@@ -23,7 +21,7 @@ require_once("sections/public_navbar.php");
 ?>
 
   <header class="relative min-h-[88vh] overflow-hidden pt-20">
-    <img src="assets/img/auth/auth.png" alt="Layanan digital koperasi KSU St. Karolus" class="absolute inset-0 h-full w-full object-cover">
+    <img src="assets/img/kantor.jpeg" alt="Layanan digital koperasi KSU St. Karolus" class="absolute inset-0 h-full w-full object-cover">
     <div class="absolute inset-0 bg-slate-950/75"></div>
     <div class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-slate-50 to-transparent"></div>
 
@@ -61,7 +59,7 @@ require_once("sections/public_navbar.php");
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/5">
           <div class="text-sm font-semibold text-slate-500">Informasi</div>
-          <div class="mt-3 text-xl font-extrabold text-ink">Berita dan Pengumuman</div>
+          <div class="mt-3 text-xl font-extrabold text-ink">Pengumuman Koperasi</div>
         </div>
       </div>
     </section>
@@ -70,9 +68,9 @@ require_once("sections/public_navbar.php");
       <div class="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1.05fr_.95fr] lg:px-8">
         <div>
           <span class="text-sm font-extrabold uppercase tracking-widest text-primary">Tentang Koperasi</span>
-          <h2 class="mt-4 text-3xl font-extrabold leading-tight text-ink sm:text-4xl">Ruang keuangan bersama untuk anggota yang ingin tumbuh lebih tenang.</h2>
+          <h2 class="mt-4 text-3xl font-extrabold leading-tight text-ink sm:text-4xl">KSU St. Karolus, koperasi serba usaha di Kabupaten Malaka.</h2>
           <p class="mt-6 text-base leading-8 text-slate-600">
-            KSU St. Karolus menghadirkan layanan koperasi yang berfokus pada kepercayaan, pencatatan rapi, dan kemudahan akses. Anggota dapat melihat perkembangan simpanan, status pinjaman, dan pembayaran angsuran dengan lebih jelas.
+            Koperasi Serba Usaha (KSU) St. Karolus berkantor di Kabupaten Malaka, Nusa Tenggara Timur. Website ini menyediakan akses layanan simpanan, pinjaman, dan informasi koperasi bagi anggota. Anggota dapat melihat perkembangan simpanan, status pinjaman, dan pembayaran angsuran dengan lebih jelas.
           </p>
           <div class="mt-8 grid gap-4 sm:grid-cols-2">
             <div class="rounded-2xl border border-slate-200 bg-white p-5">
@@ -135,7 +133,7 @@ require_once("sections/public_navbar.php");
               <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8c-3 0-5 1.5-5 3.5S9 15 12 15s5-1.5 5-3.5S15 8 12 8Z" /><path d="M4 6h16v12H4z" /></svg>
             </div>
             <h3 class="text-xl font-extrabold text-ink">Pengajuan Pinjaman</h3>
-            <p class="mt-3 text-sm leading-7 text-slate-600">Anggota dapat mengajukan pinjaman dan memantau status validasi dari pengurus koperasi.</p>
+            <p class="mt-3 text-sm leading-7 text-slate-600">Anggota dapat mengajukan pinjaman dan memantau status persetujuan dari kepala koperasi.</p>
           </article>
           <article class="rounded-3xl border border-slate-200 p-7 transition hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-900/5">
             <div class="mb-6 inline-flex rounded-2xl bg-emerald-50 p-4 text-emerald-600">
@@ -160,7 +158,7 @@ require_once("sections/public_navbar.php");
           $steps = [
             ['01', 'Daftar Anggota', 'Data anggota dicatat oleh pengurus koperasi.'],
             ['02', 'Kelola Simpanan', 'Simpanan dicatat dan dapat dipantau dari akun anggota.'],
-            ['03', 'Ajukan Pinjaman', 'Pengajuan diproses dan divalidasi oleh bendahara.'],
+            ['03', 'Ajukan Pinjaman', 'Pengajuan diproses dan disetujui oleh kepala koperasi.'],
             ['04', 'Pantau Angsuran', 'Setiap pembayaran tersimpan sebagai riwayat angsuran.']
           ];
           foreach ($steps as $step) { ?>
@@ -179,9 +177,9 @@ require_once("sections/public_navbar.php");
         <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
             <span class="text-sm font-extrabold uppercase tracking-widest text-primary">Informasi</span>
-            <h2 class="mt-4 text-3xl font-extrabold text-ink sm:text-4xl">Berita dan pengumuman terbaru.</h2>
+            <h2 class="mt-4 text-3xl font-extrabold text-ink sm:text-4xl">Pengumuman terbaru.</h2>
           </div>
-          <a href="berita" class="inline-flex rounded-full border border-slate-200 px-6 py-3 text-sm font-extrabold text-slate-700 transition hover:border-primary hover:text-primary">Lihat Semua</a>
+          <a href="pengumuman" class="inline-flex rounded-full border border-slate-200 px-6 py-3 text-sm font-extrabold text-slate-700 transition hover:border-primary hover:text-primary">Lihat Semua</a>
         </div>
         <div class="mt-10 grid gap-6 md:grid-cols-3">
           <?php if (!empty($latestInfo)) { ?>
@@ -194,7 +192,7 @@ require_once("sections/public_navbar.php");
             <?php } ?>
           <?php } else { ?>
             <div class="rounded-3xl border border-slate-200 p-6 md:col-span-3">
-              <p class="text-slate-600">Belum ada berita atau pengumuman terbaru.</p>
+              <p class="text-slate-600">Belum ada pengumuman terbaru.</p>
             </div>
           <?php } ?>
         </div>

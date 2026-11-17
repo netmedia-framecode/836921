@@ -2,7 +2,7 @@
 $_SESSION["project_ksu_st_karolus"]["name_page"] = "Tambah Data Simpanan";
 require_once("../../templates/views_top.php"); ?>
 
-<div class="nxl-content" style="height: 100vh;">
+<div class="nxl-content">
 
   <!-- [ page-header ] start -->
   <div class="page-header">
@@ -20,22 +20,27 @@ require_once("../../templates/views_top.php"); ?>
 
   <!-- [ Main Content ] start -->
   <div class="main-content">
+    <?php require_once(__DIR__ . "/../../sections/persyaratan.php"); ?>
     <div class="row">
       <div class="col-lg-6">
         <div class="card stretch stretch-full">
           <div class="card-body">
             <form action="" method="post">
+ <input type="hidden" name="rat_ditampilkan" value="<?= (int)$rat_aktif['id_rat'] ?>">
+ <input type="hidden" name="csrf_simpanan" value="<?= htmlspecialchars($csrf_simpanan) ?>">
+              <?php if (!$is_anggota_login) { ?>
               <div class="mb-3">
                 <label for="id_anggota" class="form-label">Anggota</label>
                 <select name="id_anggota" class="form-control" id="id_anggota" data-select2-selector="default" required>
                   <option value="">Pilih Anggota</option>
-                  <?php foreach ($views_anggota_simpanan as $data_anggota) { ?>
-                    <option value="<?= $data_anggota['id_anggota'] ?>">
-                      <?= $data_anggota['nik'] . ' - ' . $data_anggota['nama_lengkap'] ?>
+                  <?php foreach ($views_pemilik_simpanan as $data_anggota) { ?>
+                    <option value="<?= htmlspecialchars($data_anggota['pilihan'], ENT_QUOTES, 'UTF-8') ?>">
+                      <?= htmlspecialchars($data_anggota['label'], ENT_QUOTES, 'UTF-8') ?>
                     </option>
                   <?php } ?>
                 </select>
               </div>
+              <?php } ?>
               <div class="mb-3">
                 <label for="jenis_simpanan" class="form-label">Jenis Simpanan</label>
                 <select name="jenis_simpanan" class="form-control" id="jenis_simpanan" required>
@@ -47,7 +52,7 @@ require_once("../../templates/views_top.php"); ?>
               </div>
               <div class="mb-3">
                 <label for="jumlah" class="form-label">Jumlah</label>
-                <input type="number" name="jumlah" class="form-control" id="jumlah" min="0" step="0.01" required>
+                <input type="number" name="jumlah" class="form-control" id="jumlah" min="0.01" step="0.01" required>
               </div>
               <div class="mb-3">
                 <label for="tgl_simpanan" class="form-label">Tanggal Simpanan</label>

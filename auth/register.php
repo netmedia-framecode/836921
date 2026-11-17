@@ -19,38 +19,8 @@ if($data_auth['model']==1){?>
               <p class="fs-12 fw-medium text-muted">Mari kita siapkan semuanya, sehingga Anda dapat memverifikasi akun
                 pribadi Anda dan mulai menyiapkan profil Anda.</p>
               <form action="" method="post" class="w-100 mt-4 pt-2">
-                <div class="mb-4">
-                  <input type="text" name="name" class="form-control form-control-user" id="name" placeholder="Nama"
-                    required>
-                </div>
-                <div class="mb-4">
-                  <input type="email" name="email" class="form-control" placeholder="Email" value="example@gmail.com"
-                    required>
-                </div>
-                <div class="mb-4 generate-pass">
-                  <div class="input-group field">
-                    <input type="password" name="password" class="form-control password" id="newPassword"
-                      placeholder="Password Confirm">
-                    <div class="input-group-text c-pointer gen-pass" data-bs-toggle="tooltip" title="Generate Password">
-                      <i class="feather-hash"></i>
-                    </div>
-                    <div class="input-group-text border-start bg-gray-2 c-pointer show-pass" data-bs-toggle="tooltip"
-                      title="Show/Hide Password"><i></i></div>
-                  </div>
-                  <div class="progress-bar mt-2">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
-                </div>
-                <div class="mb-4">
-                  <input type="password" name="re_password" class="form-control" placeholder="Password again" required>
-                </div>
-                <div class="mt-3">
-                  <button type="submit" name="register" class="btn btn-lg btn-primary w-100">Buat Akun</button>
-                </div>
-              </form>
+<?php require(__DIR__ . "/../sections/register-fields.php"); ?>
+</form>
               <div class="mt-5 text-muted">
                 <span> Sudah punya akun?</span>
                 <a href="./" class="fw-bold">Login</a>
@@ -81,38 +51,8 @@ if($data_auth['model']==1){?>
           <p class="fs-12 fw-medium text-muted">Mari kita siapkan semuanya, sehingga Anda dapat memverifikasi akun
             pribadi Anda dan mulai menyiapkan profil Anda.</p>
           <form action="" method="post" class="w-100 mt-4 pt-2">
-            <div class="mb-4">
-              <input type="text" name="name" class="form-control form-control-user" id="name" placeholder="Nama"
-                required>
-            </div>
-            <div class="mb-4">
-              <input type="email" name="email" class="form-control" placeholder="Email" value="example@gmail.com"
-                required>
-            </div>
-            <div class="mb-4 generate-pass">
-              <div class="input-group field">
-                <input type="password" name="password" class="form-control password" id="newPassword"
-                  placeholder="Password Confirm">
-                <div class="input-group-text c-pointer gen-pass" data-bs-toggle="tooltip" title="Generate Password">
-                  <i class="feather-hash"></i>
-                </div>
-                <div class="input-group-text border-start bg-gray-2 c-pointer show-pass" data-bs-toggle="tooltip"
-                  title="Show/Hide Password"><i></i></div>
-              </div>
-              <div class="progress-bar mt-2">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
-            </div>
-            <div class="mb-4">
-              <input type="password" name="re_password" class="form-control" placeholder="Password again" required>
-            </div>
-            <div class="mt-3">
-              <button type="submit" name="register" class="btn btn-lg btn-primary w-100">Buat Akun</button>
-            </div>
-          </form>
+<?php require(__DIR__ . "/../sections/register-fields.php"); ?>
+</form>
           <div class="mt-5 text-muted">
             <span> Sudah punya akun?</span>
             <a href="./" class="fw-bold">Login</a>

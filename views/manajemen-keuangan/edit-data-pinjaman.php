@@ -17,7 +17,7 @@ WHERE pinjaman.id_pinjaman = '$id' $filter_anggota_login";
     exit();
   }
 
-  if ($is_anggota_login && strtolower($view_data['status_pinjam']) == 'disetujui') {
+  if ($view_data['status_pinjam'] !== 'Pengajuan' || !canAction('edit', 'manajemen-keuangan/data-pinjaman')) {
     alert("Pinjaman yang sudah disetujui tidak dapat diubah.", "warning");
     header("Location: data-pinjaman");
     exit();
@@ -26,7 +26,7 @@ WHERE pinjaman.id_pinjaman = '$id' $filter_anggota_login";
   $_SESSION["project_ksu_st_karolus"]["name_page"] = "Ubah Data Pinjaman";
   require_once("../../templates/views_top.php"); ?>
 
-  <div class="nxl-content" style="height: 100vh;">
+  <div class="nxl-content">
 
     <!-- [ page-header ] start -->
     <div class="page-header">
@@ -49,6 +49,7 @@ WHERE pinjaman.id_pinjaman = '$id' $filter_anggota_login";
           <div class="card stretch stretch-full">
             <div class="card-body">
               <form action="" method="post">
+ <input type="hidden" name="csrf_simpanan" value="<?= htmlspecialchars($csrf_simpanan) ?>">
                 <input type="hidden" name="id_pinjaman" value="<?= $view_data['id_pinjaman'] ?>">
                 <?php if ($is_anggota_login) { ?>
                   <input type="hidden" name="id_anggota" value="<?= $view_data['id_anggota'] ?>">
@@ -68,51 +69,14 @@ WHERE pinjaman.id_pinjaman = '$id' $filter_anggota_login";
                 <?php } ?>
                 <div class="mb-3">
                   <label for="jumlah_pinjaman" class="form-label">Jumlah Pinjaman</label>
-                  <input type="number" name="jumlah_pinjaman" class="form-control" id="jumlah_pinjaman" value="<?= $view_data['jumlah_pinjaman'] ?>" min="0" step="0.01" required>
+                  <input type="number" name="jumlah_pinjaman" class="form-control" id="jumlah_pinjaman" value="<?= $view_data['jumlah_pinjaman'] ?>" min="0.01" step="0.01" required>
                 </div>
-                <div class="mb-3">
-                  <label for="tenor_bulan" class="form-label">Tenor Bulan</label>
-                  <?php if ($is_anggota_login) { ?>
-                    <select name="tenor_bulan" class="form-control" id="tenor_bulan" required>
-                      <option value="">Pilih Tenor</option>
-                      <?php foreach ([3, 6, 9, 12, 18, 24] as $tenor) { ?>
-                        <option value="<?= $tenor ?>" <?= $view_data['tenor_bulan'] == $tenor ? 'selected' : '' ?>><?= $tenor ?> Bulan</option>
-                      <?php } ?>
-                    </select>
-                  <?php } else { ?>
-                    <input type="number" name="tenor_bulan" class="form-control" id="tenor_bulan" value="<?= $view_data['tenor_bulan'] ?>" min="1" required>
-                  <?php } ?>
-                </div>
-                <?php if ($is_anggota_login) { ?>
-                  <input type="hidden" name="bunga_persen" value="<?= $view_data['bunga_persen'] ?>">
-                  <input type="hidden" name="status_pinjam" value="<?= $view_data['status_pinjam'] ?>">
-                  <input type="hidden" name="tanggal_pengajuan" value="<?= $view_data['tanggal_pengajuan'] ?>">
-                  <input type="hidden" name="tanggal_disetujui" value="<?= $view_data['tanggal_disetujui'] ?>">
-                <?php } else { ?>
-                  <div class="mb-3">
-                    <label for="bunga_persen" class="form-label">Bunga Persen</label>
-                    <input type="number" name="bunga_persen" class="form-control" id="bunga_persen" value="<?= $view_data['bunga_persen'] ?>" min="0" step="0.01" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="status_pinjam" class="form-label">Status Pinjam</label>
-                    <select name="status_pinjam" class="form-control" id="status_pinjam" required>
-                      <option value="">Pilih Status</option>
-                      <option value="Pengajuan" <?= $view_data['status_pinjam'] == 'Pengajuan' ? 'selected' : '' ?>>Pengajuan</option>
-                      <option value="Disetujui" <?= $view_data['status_pinjam'] == 'Disetujui' ? 'selected' : '' ?>>Disetujui</option>
-                      <option value="Ditolak" <?= $view_data['status_pinjam'] == 'Ditolak' ? 'selected' : '' ?>>Ditolak</option>
-                      <option value="Lunas" <?= $view_data['status_pinjam'] == 'Lunas' ? 'selected' : '' ?>>Lunas</option>
-                    </select>
-                  </div>
-                  <div class="mb-3">
-                    <label for="tanggal_pengajuan" class="form-label">Tanggal Pengajuan</label>
-                    <input type="date" name="tanggal_pengajuan" class="form-control" id="tanggal_pengajuan" value="<?= $view_data['tanggal_pengajuan'] ?>" required>
-                  </div>
-                  <div class="mb-3">
-                    <label for="tanggal_disetujui" class="form-label">Tanggal Disetujui</label>
-                    <input type="date" name="tanggal_disetujui" class="form-control" id="tanggal_disetujui" value="<?= $view_data['tanggal_disetujui'] ?>">
-                  </div>
-                <?php } ?>
-                <div class="mb-3 hstack gap-2 justify-content-left">
+              <div class="alert alert-info">
+                Bunga: <strong><?= htmlspecialchars($view_data['bunga_persen']) ?>% <?= ($view_data['basis_bunga'] === 'total' ? 'total selama tenor' : 'per bulan (ketentuan lama)') ?></strong>.<br>
+                Jangka waktu: <strong><?= (int)$view_data['tenor_bulan'] ?> bulan</strong>.<br>
+
+              </div>
+              <div class="mb-3 hstack gap-2 justify-content-left">
                   <a href="data-pinjaman" class="btn btn-success">Kembali</a>
                   <?php if (canAction('edit')) { ?>
                     <button type="submit" name="edit_pinjaman" class="btn btn-warning">Ubah</button>

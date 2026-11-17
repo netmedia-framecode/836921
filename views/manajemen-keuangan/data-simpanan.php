@@ -2,7 +2,7 @@
 $_SESSION["project_ksu_st_karolus"]["name_page"] = "Data Simpanan";
 require_once("../../templates/views_top.php"); ?>
 
-<div class="nxl-content" style="height: 100vh;">
+<div class="nxl-content">
 
   <!-- [ page-header ] start -->
   <div class="page-header">
@@ -58,7 +58,8 @@ require_once("../../templates/views_top.php"); ?>
                     <th class="text-center">Jumlah</th>
                     <th class="text-center">Tanggal Simpanan</th>
                     <th class="text-center">Penerima</th>
-                    <th class="text-center">Aksi</th>
+                    <th class="text-center">Status / Review</th>
+                    <th class="text-center" data-orderable="false" data-searchable="false">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -73,17 +74,23 @@ require_once("../../templates/views_top.php"); ?>
                         <?php $tgl_simpanan = date_create($data['tgl_simpanan']);
                         echo $tgl_simpanan ? date_format($tgl_simpanan, "d-m-Y H:i") : "-"; ?>
                       </td>
-                      <td><?= $data['nama_penerima'] ?></td>
+                      <td><?= htmlspecialchars($data['nama_penerima'] ?: '-') ?></td>
+                      <td class="review-status">
+                        <span class="badge <?= $data['status_simpanan'] === 'Disetujui' ? 'bg-success' : ($data['status_simpanan'] === 'Ditolak' ? 'bg-danger' : 'bg-warning text-dark') ?>"><?= htmlspecialchars($data['status_simpanan']) ?></span>
+                        <?php $jenis_pengajuan = 'simpanan'; $pengajuan = $data; $review_mode = 'status'; require(__DIR__ . '/../../sections/review-pengajuan.php'); ?>
+                      </td>
                       <td>
-                        <div class="hstack gap-2 justify-content-center">
-                          <?php if (canAction('edit')) { ?>
+                        <div class="d-flex flex-wrap gap-2 justify-content-center financial-actions">
+                          <?php $review_mode = 'button'; require(__DIR__ . '/../../sections/review-pengajuan.php'); ?>
+                          <?php if (!$verifikasi_pengajuan && !$acc_pengajuan && !($data['status_simpanan'] === 'Pengajuan' && (canAction('edit') || canAction('delete')))) { ?><span class="text-muted">—</span><?php } ?>
+                          <?php if (canAction('edit') && $data['status_simpanan'] === 'Pengajuan') { ?>
                             <a href="edit-data-simpanan?p=<?= $data['id_simpanan'] ?>" class="btn btn-warning btn-sm">
-                              <i class="bi bi-pencil-square"></i>
+                              <i class="bi bi-pencil-square" aria-hidden="true"></i> Ubah
                             </a>
                           <?php } ?>
-                          <?php if (canAction('delete')) { ?>
+                          <?php if (canAction('delete') && $data['status_simpanan'] === 'Pengajuan') { ?>
                             <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteSimpanan<?= $data['id_simpanan'] ?>">
-                              <i class="bi bi-trash"></i>
+                              <i class="bi bi-trash" aria-hidden="true"></i> Hapus
                             </button>
                           <?php } ?>
                         </div>
@@ -104,6 +111,7 @@ require_once("../../templates/views_top.php"); ?>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <form action="" method="post">
+ <input type="hidden" name="csrf_simpanan" value="<?= htmlspecialchars($csrf_simpanan) ?>">
                         <div class="modal-body">
                           <input type="hidden" name="id_simpanan" value="<?= $data['id_simpanan'] ?>">
                           <input type="hidden" name="nama_lengkap" value="<?= $data['nama_lengkap'] ?>">
@@ -111,7 +119,7 @@ require_once("../../templates/views_top.php"); ?>
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                          <?php if (canAction('delete')) { ?>
+                          <?php if (canAction('delete') && $data['status_simpanan'] === 'Pengajuan') { ?>
                             <button type="submit" name="delete_simpanan" class="btn btn-danger">Hapus</button>
                           <?php } ?>
                         </div>
@@ -130,4 +138,11 @@ require_once("../../templates/views_top.php"); ?>
 
 </div>
 
+<?php
+if (mysqli_num_rows($views_simpanan)) mysqli_data_seek($views_simpanan, 0);
+foreach ($views_simpanan as $pengajuan) {
+  $jenis_pengajuan = 'simpanan'; $review_mode = 'modal';
+  require(__DIR__ . '/../../sections/review-pengajuan.php');
+}
+?>
 <?php require_once("../../templates/views_bottom.php") ?>

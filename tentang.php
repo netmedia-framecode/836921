@@ -10,7 +10,7 @@ require_once("sections/public_navbar.php");
 ?>
 
 <header class="relative overflow-hidden bg-slate-950 pt-28">
-  <img src="assets/img/auth/auth.png" alt="Profil <?= htmlspecialchars($publicWebName) ?>" class="absolute inset-0 h-full w-full object-cover opacity-25">
+  <img src="assets/img/kantor.jpeg" alt="Profil <?= htmlspecialchars($publicWebName) ?>" class="absolute inset-0 h-full w-full object-cover opacity-25">
   <div class="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
     <div class="max-w-3xl text-white">
       <span class="inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-bold backdrop-blur">Tentang Koperasi</span>
@@ -30,10 +30,10 @@ require_once("sections/public_navbar.php");
         <h2 class="mt-4 text-3xl font-extrabold leading-tight text-ink sm:text-4xl"><?= htmlspecialchars($publicWebName) ?> dan komitmen pelayanan anggota.</h2>
         <div class="mt-6 space-y-5 text-base leading-8 text-slate-600">
           <p>
-            Koperasi merupakan sarana gotong royong untuk membantu anggota mengelola kebutuhan ekonomi secara bersama. Melalui sistem ini, aktivitas simpanan, pinjaman, angsuran, laporan, dan informasi koperasi dapat disajikan lebih terstruktur.
+            Koperasi Serba Usaha (KSU) St. Karolus berkantor di Kabupaten Malaka, Nusa Tenggara Timur. Identitas pada papan nama kantor mencantumkan badan hukum 008389/BH/M.KUKM.2/V/2018, tanggal 14 Mei 2018.
           </p>
           <p>
-            Pengurus dapat memantau transaksi dengan lebih cepat, sementara anggota memperoleh akses yang jelas terhadap data pribadinya. Dengan begitu, proses pelayanan menjadi lebih transparan dan mudah dipertanggungjawabkan.
+            Melalui website KSU St. Karolus, anggota dapat mengakses catatan simpanan, mengajukan pinjaman, melihat riwayat angsuran, serta membaca pengumuman, dan kebijakan koperasi. Kunjungi halaman Kontak untuk melihat titik lokasi kantor.
           </p>
         </div>
       </div>
@@ -63,12 +63,12 @@ require_once("sections/public_navbar.php");
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="grid gap-6 lg:grid-cols-2">
         <div class="rounded-3xl border border-slate-200 p-8">
-          <span class="text-sm font-extrabold uppercase tracking-widest text-primary">Visi</span>
+          <span class="text-sm font-extrabold uppercase tracking-widest text-primary">Pelayanan Anggota</span>
           <h2 class="mt-4 text-3xl font-extrabold text-ink">Menjadi koperasi yang terpercaya, tertib, dan bermanfaat bagi kesejahteraan anggota.</h2>
-          <p class="mt-5 text-base leading-8 text-slate-600">Visi ini diwujudkan melalui layanan yang mudah diakses, pengelolaan transaksi yang transparan, dan informasi yang tersaji dengan baik.</p>
+          <p class="mt-5 text-base leading-8 text-slate-600">Website ini membantu anggota mengakses catatan transaksi dan informasi layanan koperasi.</p>
         </div>
         <div class="rounded-3xl border border-slate-200 p-8">
-          <span class="text-sm font-extrabold uppercase tracking-widest text-primary">Misi</span>
+          <span class="text-sm font-extrabold uppercase tracking-widest text-primary">Layanan Website</span>
           <div class="mt-5 space-y-4">
             <?php
             $missions = [
@@ -100,7 +100,7 @@ require_once("sections/public_navbar.php");
         $steps = [
           ['01', 'Data Anggota', 'Identitas anggota dicatat sebagai dasar akses layanan koperasi.'],
           ['02', 'Transaksi', 'Simpanan, pinjaman, dan angsuran diproses sesuai kebutuhan anggota.'],
-          ['03', 'Validasi', 'Pengurus atau bendahara melakukan pemeriksaan dan pencatatan.'],
+          ['03', 'Validasi', 'Admin/bendahara memeriksa kelengkapan; kepala koperasi memberikan persetujuan akhir.'],
           ['04', 'Laporan', 'Data transaksi disajikan menjadi laporan yang mudah dipantau.']
         ];
         foreach ($steps as $step) { ?>

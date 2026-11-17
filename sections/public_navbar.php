@@ -1,6 +1,6 @@
 <?php
 $publicWebName = ($data_utilities['name_web'] ?? '') ?: $name_website;
-$publicLogo = ($data_utilities['logo'] ?? '') ?: 'logo.png';
+$publicLogo = 'logo-kop.png';
 $publicLogoPath = preg_match('/^(https?:\/\/|assets\/|\/)/', $publicLogo) ? $publicLogo : 'assets/img/' . $publicLogo;
 $publicActive = $publicActive ?? 'beranda';
 ?>
@@ -17,7 +17,7 @@ $publicActive = $publicActive ?? 'beranda';
       <a href="./" class="<?= $publicActive == 'beranda' ? 'text-primary' : 'transition hover:text-primary' ?>">Beranda</a>
       <a href="tentang" class="<?= $publicActive == 'tentang' ? 'text-primary' : 'transition hover:text-primary' ?>">Tentang</a>
       <a href="layanan" class="<?= $publicActive == 'layanan' ? 'text-primary' : 'transition hover:text-primary' ?>">Layanan</a>
-      <a href="berita" class="<?= $publicActive == 'berita' ? 'text-primary' : 'transition hover:text-primary' ?>">Berita</a>
+      <a href="pengumuman" class="<?= $publicActive == 'pengumuman' ? 'text-primary' : 'transition hover:text-primary' ?>">Pengumuman</a>
       <a href="kontak" class="<?= $publicActive == 'kontak' ? 'text-primary' : 'transition hover:text-primary' ?>">Kontak</a>
     </div>
 

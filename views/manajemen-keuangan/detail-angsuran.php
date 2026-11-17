@@ -9,6 +9,7 @@ if (!isset($_GET["p"])) {
     pinjaman.jumlah_pinjaman,
     pinjaman.tenor_bulan,
     pinjaman.bunga_persen,
+    pinjaman.basis_bunga,
     pinjaman.status_pinjam,
     pinjaman.tanggal_pengajuan,
     pinjaman.tanggal_disetujui,
@@ -37,10 +38,10 @@ if (!isset($_GET["p"])) {
   FROM angsuran
   LEFT JOIN users ON angsuran.id_penerima=users.id_user
   WHERE angsuran.id_pinjaman='$id_pinjaman'
-  ORDER BY angsuran.angsuran_ke ASC, angsuran.tgl_bayar ASC";
+  ORDER BY angsuran.angsuran_ke ASC, angsuran.tgl_bayar ASC, angsuran.id_angsuran ASC";
   $views_history = mysqli_query($conn, $select_history);
 
-  $angsuran_bulanan = $view_data['tenor_bulan'] > 0 ? ($view_data['jumlah_pinjaman'] / $view_data['tenor_bulan']) + ($view_data['jumlah_pinjaman'] * ($view_data['bunga_persen'] / 100)) : 0;
+  $angsuran_bulanan = $view_data['tenor_bulan'] > 0 ? totalTagihanPinjaman($view_data['jumlah_pinjaman'], $view_data['bunga_persen'], $view_data['tenor_bulan'], $view_data['basis_bunga']) / $view_data['tenor_bulan'] : 0;
   $total_tagihan = $angsuran_bulanan * $view_data['tenor_bulan'];
   $total_bayar = 0;
   $angsuran_terakhir = 0;
@@ -87,7 +88,7 @@ if (!isset($_GET["p"])) {
       display: flex;
       flex-direction: column;
       gap: 16px;
-      padding-left: 4px;
+      padding-left: 28px;
     }
 
     .stair-item {
@@ -97,7 +98,7 @@ if (!isset($_GET["p"])) {
       padding: 16px 18px;
       background: #fff;
       box-shadow: 0 10px 24px rgba(15, 23, 42, .05);
-      margin-left: calc(var(--step) * 22px);
+      margin-left: 0;
     }
 
     .stair-item::before {
@@ -143,7 +144,7 @@ if (!isset($_GET["p"])) {
     }
   </style>
 
-  <div class="nxl-content" style="min-height: 100vh;">
+  <div class="nxl-content">
 
     <!-- [ page-header ] start -->
     <div class="page-header">
@@ -221,7 +222,7 @@ if (!isset($_GET["p"])) {
                 </div>
                 <div class="col-md-6">
                   <small class="text-muted d-block">Bunga</small>
-                  <strong><?= $view_data['bunga_persen'] ?>%</strong>
+                  <strong><?= $view_data['bunga_persen'] ?>% <?= $view_data['basis_bunga'] === 'total' ? 'total' : '/ bulan (lama)' ?></strong>
                 </div>
                 <div class="col-md-6">
                   <small class="text-muted d-block">Tanggal Pengajuan</small>
@@ -253,16 +254,20 @@ if (!isset($_GET["p"])) {
             <div class="card-body">
               <div class="d-flex align-items-center justify-content-between mb-4">
                 <div>
-                  <h5 class="mb-1">History Angsuran</h5>
+                  <h5 class="mb-1">Tahapan Riwayat Angsuran</h5>
                   <span class="text-muted"><?= mysqli_num_rows($views_history) ?> transaksi pembayaran</span>
                 </div>
               </div>
 
               <div class="stair-timeline">
-                <?php foreach ($views_history as $index => $history) {
-                  $step = $index % 5;
-                  $is_paid_off = $history['sisa_pinjaman'] <= 0; ?>
-                  <div class="stair-item <?= $is_paid_off ? 'is-paid-off' : '' ?>" style="--step: <?= $step ?>;">
+                <?php $akumulasi_bayar = 0;
+                foreach ($views_history as $index => $history) {
+                  $sisa_sebelum = max($total_tagihan - $akumulasi_bayar, 0);
+                  $akumulasi_bayar += (float) $history['jumlah_bayar'];
+                  $sisa_tahap = max($total_tagihan - $akumulasi_bayar, 0);
+                  $is_paid_off = $sisa_tahap <= 0; ?>
+                  <div class="stair-item <?= $is_paid_off ? 'is-paid-off' : '' ?>">
+                    <p class="text-muted mb-2">Tahap <?= $index + 1 ?> · <?= $is_paid_off ? 'Lunas' : 'Pembayaran tercatat' ?></p>
                     <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
                       <div>
                         <span class="badge <?= $is_paid_off ? 'bg-success' : 'bg-primary' ?> mb-2">Angsuran Ke-<?= $history['angsuran_ke'] ?></span>
@@ -270,12 +275,12 @@ if (!isset($_GET["p"])) {
                       </div>
                       <div class="d-flex align-items-center gap-2">
                         <strong>Rp <?= number_format($history['jumlah_bayar'], 0, ',', '.') ?></strong>
-                        <?php if (canAction('edit')) { ?>
+                        <?php if (canAction('edit', 'manajemen-keuangan/data-angsuran')) { ?>
                           <a href="edit-data-angsuran?p=<?= $history['id_angsuran'] ?>" class="btn btn-warning btn-sm">
                             <i class="bi bi-pencil-square"></i>
                           </a>
                         <?php } ?>
-                        <?php if (canAction('delete')) { ?>
+                        <?php if (canAction('delete', 'manajemen-keuangan/data-angsuran')) { ?>
                           <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteAngsuran<?= $history['id_angsuran'] ?>">
                             <i class="bi bi-trash"></i>
                           </button>
@@ -284,8 +289,16 @@ if (!isset($_GET["p"])) {
                     </div>
                     <div class="row g-3">
                       <div class="col-md-6">
-                        <small class="text-muted d-block">Sisa Pinjaman</small>
-                        <strong>Rp <?= number_format($history['sisa_pinjaman'], 0, ',', '.') ?></strong>
+                        <small class="text-muted d-block">Tagihan Sebelum Pembayaran</small>
+                        <strong>Rp <?= number_format($sisa_sebelum, 0, ',', '.') ?></strong>
+                      </div>
+                      <div class="col-md-6">
+                        <small class="text-muted d-block">Akumulasi Pembayaran</small>
+                        <strong>Rp <?= number_format($akumulasi_bayar, 0, ',', '.') ?></strong>
+                      </div>
+                      <div class="col-md-6">
+                        <small class="text-muted d-block">Sisa Tagihan Setelah Tahap Ini</small>
+                        <strong>Rp <?= number_format($sisa_tahap, 0, ',', '.') ?></strong>
                       </div>
                       <div class="col-md-6">
                         <small class="text-muted d-block">Penerima</small>
@@ -310,7 +323,7 @@ if (!isset($_GET["p"])) {
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <?php if (canAction('delete')) { ?>
+                            <?php if (canAction('delete', 'manajemen-keuangan/data-angsuran')) { ?>
                               <button type="submit" name="delete_angsuran" class="btn btn-danger">Hapus</button>
                             <?php } ?>
                           </div>
@@ -319,6 +332,10 @@ if (!isset($_GET["p"])) {
                     </div>
                   </div>
                 <?php } ?>
+                <div class="stair-item <?= $sisa_tagihan <= 0 ? 'is-paid-off' : '' ?>">
+                  <h6><?= $sisa_tagihan <= 0 ? 'Pembayaran Selesai' : 'Tahap Berikutnya' ?></h6>
+                  <p class="mb-0"><?= $sisa_tagihan <= 0 ? 'Seluruh tagihan pinjaman telah dibayar.' : 'Menunggu pembayaran berikutnya. Sisa tagihan: Rp ' . number_format($sisa_tagihan, 0, ',', '.') ?></p>
+                </div>
               </div>
             </div>
           </div>

@@ -10,7 +10,7 @@ require_once("sections/public_navbar.php");
 ?>
 
 <header class="relative overflow-hidden bg-slate-950 pt-28">
-  <img src="assets/img/auth/auth.png" alt="Kontak <?= htmlspecialchars($publicWebName) ?>" class="absolute inset-0 h-full w-full object-cover opacity-25">
+  <img src="assets/img/kantor.jpeg" alt="Kontak <?= htmlspecialchars($publicWebName) ?>" class="absolute inset-0 h-full w-full object-cover opacity-25">
   <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950/90 to-blue-950/80"></div>
   <div class="relative mx-auto max-w-7xl px-4 py-20 text-white sm:px-6 lg:px-8">
     <div class="max-w-3xl">
@@ -37,7 +37,7 @@ require_once("sections/public_navbar.php");
           <div class="relative h-[28rem] w-full bg-slate-100">
             <iframe
               title="Lokasi <?= htmlspecialchars($publicWebName) ?>"
-              src="https://www.google.com/maps?q=<?= urlencode($publicWebName) ?>&output=embed"
+              src="https://www.google.com/maps?q=<?= urlencode($koperasi['koordinat']) ?>&output=embed"
               class="absolute inset-0 h-full w-full border-0"
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -47,7 +47,7 @@ require_once("sections/public_navbar.php");
               <h3 class="text-xl font-extrabold text-ink"><?= htmlspecialchars($publicWebName) ?></h3>
               <p class="mt-2 text-sm leading-7 text-slate-600">Gunakan peta untuk melihat lokasi koperasi atau buka langsung melalui Google Maps.</p>
             </div>
-            <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($publicWebName) ?>" target="_blank" rel="noopener" class="inline-flex justify-center rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-700">Buka Maps</a>
+            <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($koperasi['koordinat']) ?>" target="_blank" rel="noopener" class="inline-flex justify-center rounded-full bg-primary px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-700">Buka Maps</a>
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@ require_once("sections/public_navbar.php");
               <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 12-9 12S3 17 3 10a9 9 0 1 1 18 0Z" /><path d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" /></svg>
             </div>
             <h3 class="text-lg font-extrabold text-ink">Kantor Koperasi</h3>
-            <p class="mt-3 text-sm leading-7 text-slate-600">Informasi lokasi kantor dapat diperoleh melalui pengurus koperasi atau kanal resmi yang tersedia.</p>
+            <p class="mt-3 text-sm leading-7 text-slate-600"><?= htmlspecialchars($koperasi['alamat']) ?>. Lokasi kantor ditandai pada peta di halaman ini.</p>
           </div>
 
           <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -67,7 +67,7 @@ require_once("sections/public_navbar.php");
               <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.77.63 2.6a2 2 0 0 1-.45 2.11L8 9.72a16 16 0 0 0 6.28 6.28l1.29-1.29a2 2 0 0 1 2.11-.45c.83.3 1.7.51 2.6.63A2 2 0 0 1 22 16.92Z" /></svg>
             </div>
             <h3 class="text-lg font-extrabold text-ink">Layanan Anggota</h3>
-            <p class="mt-3 text-sm leading-7 text-slate-600">Pertanyaan terkait simpanan, pinjaman, dan angsuran sebaiknya dilakukan melalui akun anggota.</p>
+            <p class="mt-3 text-sm leading-7 text-slate-600"><?php foreach ($koperasi['telepon'] as $telepon) { ?><a class="block font-bold text-primary" href="tel:<?= htmlspecialchars($telepon) ?>"><?= htmlspecialchars($telepon) ?></a><?php } ?></p>
           </div>
 
           <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -75,7 +75,7 @@ require_once("sections/public_navbar.php");
               <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v5l3 2" /><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
             </div>
             <h3 class="text-lg font-extrabold text-ink">Jam Layanan</h3>
-            <p class="mt-3 text-sm leading-7 text-slate-600">Layanan administrasi mengikuti jadwal kerja koperasi dan ketentuan pengurus.</p>
+            <p class="mt-3 text-sm leading-7 text-slate-600"><?= htmlspecialchars($koperasi['jam_layanan'] ?: 'Jam layanan sedang dikonfirmasi kepada pengurus koperasi.') ?></p>
           </div>
 
           <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -83,7 +83,7 @@ require_once("sections/public_navbar.php");
               <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 5h16v14H4z" /><path d="m4 7 8 6 8-6" /></svg>
             </div>
             <h3 class="text-lg font-extrabold text-ink">Informasi Resmi</h3>
-            <p class="mt-3 text-sm leading-7 text-slate-600">Berita, pengumuman, dan kebijakan koperasi tersedia pada halaman pusat informasi.</p>
+            <p class="mt-3 text-sm leading-7 text-slate-600">Pengumuman, dan kebijakan koperasi tersedia pada halaman pusat informasi.</p>
           </div>
         </div>
 
@@ -112,7 +112,7 @@ require_once("sections/public_navbar.php");
           ['Bagaimana melihat data simpanan?', 'Anggota perlu masuk ke sistem menggunakan akun masing-masing untuk melihat data simpanan pribadi.'],
           ['Bagaimana mengajukan pinjaman?', 'Pengajuan pinjaman dapat dilakukan melalui menu pinjaman setelah anggota masuk ke sistem.'],
           ['Apakah laporan transaksi tampil di publik?', 'Tidak. Laporan transaksi hanya tersedia setelah login dan mengikuti hak akses pengguna.'],
-          ['Di mana melihat pengumuman koperasi?', 'Pengumuman terbaru tersedia pada halaman berita dan pusat informasi publik.']
+          ['Di mana melihat pengumuman koperasi?', 'Pengumuman terbaru tersedia pada halaman pengumuman dan pusat informasi publik.']
         ];
         foreach ($faqs as $faq) { ?>
           <details class="rounded-3xl border border-slate-200 bg-slate-50 p-6">

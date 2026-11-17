@@ -121,7 +121,7 @@
                       JOIN permissions p ON usm.id_sub_menu = p.id_sub_menu
                       WHERE p.id_role = '$id_role' 
                         AND p.view = 1 
-                        AND usm.id_active = 1
+                        AND usm.id_active = 1 AND usm.url NOT IN ('pusat-informasi/berita', 'pusat-informasi/berita.php')
                       ORDER BY um.id_menu ASC";
 
         $menu = mysqli_query($conn, $queryMenu);
@@ -134,7 +134,7 @@
           $querySubMenu = "SELECT usm.* FROM user_sub_menu usm
                              JOIN permissions p ON usm.id_sub_menu = p.id_sub_menu
                              WHERE usm.id_menu = '$menuId'
-                               AND usm.id_active = 1
+                               AND usm.id_active = 1 AND usm.url NOT IN ('pusat-informasi/berita', 'pusat-informasi/berita.php')
                                AND p.id_role = '$id_role'
                                AND p.view = 1
                              ORDER BY usm.id_sub_menu ASC";

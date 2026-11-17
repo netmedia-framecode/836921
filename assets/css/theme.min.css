@@ -1084,12 +1084,23 @@ body.full-screen-helper .full-screen-switcher a .minimize {
   -webkit-transition: all 0.3s ease;
   transition: all 0.3s ease;
 }
+/* The content and footer share the available viewport height; long pages grow naturally. */
 .nxl-container {
+  display: flex;
+  flex-direction: column;
   position: relative;
   top: 80px;
   margin-left: 280px;
   min-height: calc(100vh - 80px);
   transition: all 0.3s ease;
+}
+.nxl-container > .nxl-content {
+  flex: 1 0 auto;
+  min-width: 0;
+}
+.nxl-container > .footer {
+  flex-shrink: 0;
+  margin-top: auto;
 }
 .nxl-container .nxl-content.without-header {
   padding-top: 0;
@@ -9463,3 +9474,8 @@ html.app-font-family-roboto-slab body {
   }
 }
 /*# sourceMappingURL=theme.min.css.map */
+
+/* Financial review controls live in the action column; long notes may wrap. */
+.financial-actions { min-width: 150px; }
+.financial-actions .btn { white-space: nowrap; }
+.review-status { min-width: 170px; max-width: 300px; white-space: normal !important; overflow-wrap: anywhere; }

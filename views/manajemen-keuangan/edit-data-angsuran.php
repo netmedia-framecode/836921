@@ -9,6 +9,7 @@ if (!isset($_GET["p"])) {
     pinjaman.jumlah_pinjaman,
     pinjaman.tenor_bulan,
     pinjaman.bunga_persen,
+    pinjaman.basis_bunga,
     pinjaman.tanggal_pengajuan,
     anggota.nik,
     anggota.nama_lengkap
@@ -29,14 +30,14 @@ if (!isset($_GET["p"])) {
   $history_before = mysqli_fetch_assoc($history_before_query);
   $angsuran_sebelumnya = $history_before ? (int) $history_before['angsuran_sebelumnya'] : 0;
   $total_bayar_sebelumnya = $history_before ? (float) $history_before['total_bayar_sebelumnya'] : 0;
-  $angsuran_bulanan = $view_data['tenor_bulan'] > 0 ? ($view_data['jumlah_pinjaman'] / $view_data['tenor_bulan']) + ($view_data['jumlah_pinjaman'] * ($view_data['bunga_persen'] / 100)) : 0;
+  $angsuran_bulanan = $view_data['tenor_bulan'] > 0 ? totalTagihanPinjaman($view_data['jumlah_pinjaman'], $view_data['bunga_persen'], $view_data['tenor_bulan'], $view_data['basis_bunga']) / $view_data['tenor_bulan'] : 0;
   $total_tagihan = $angsuran_bulanan * $view_data['tenor_bulan'];
   $sisa_sebelum_bayar = max($total_tagihan - $total_bayar_sebelumnya, 0);
 
   $_SESSION["project_ksu_st_karolus"]["name_page"] = "Ubah Data Angsuran";
   require_once("../../templates/views_top.php"); ?>
 
-  <div class="nxl-content" style="height: 100vh;">
+  <div class="nxl-content">
 
     <!-- [ page-header ] start -->
     <div class="page-header">
@@ -64,7 +65,7 @@ if (!isset($_GET["p"])) {
                 <div class="mb-3">
                   <label for="id_pinjaman" class="form-label">Pinjaman Anggota</label>
                   <select name="id_pinjaman" class="form-control" id="id_pinjaman" data-select2-selector="default" required>
-                    <option value="<?= $view_data['id_pinjaman'] ?>" data-sisa="<?= $sisa_sebelum_bayar ?>" data-angsuran-terakhir="<?= $angsuran_sebelumnya ?>" data-jumlah-pinjaman="<?= $view_data['jumlah_pinjaman'] ?>" data-tenor="<?= $view_data['tenor_bulan'] ?>" data-bunga="<?= $view_data['bunga_persen'] ?>" selected>
+                    <option value="<?= $view_data['id_pinjaman'] ?>" data-sisa="<?= $sisa_sebelum_bayar ?>" data-angsuran-terakhir="<?= $angsuran_sebelumnya ?>" data-jumlah-pinjaman="<?= $view_data['jumlah_pinjaman'] ?>" data-tenor="<?= $view_data['tenor_bulan'] ?>" data-bunga="<?= $view_data['bunga_persen'] ?>" data-basis="<?= htmlspecialchars($view_data['basis_bunga']) ?>" selected>
                       <?= $view_data['nik'] . ' - ' . $view_data['nama_lengkap'] ?> | Tanggal <?= $view_data['tanggal_pengajuan'] ? date('d-m-Y', strtotime($view_data['tanggal_pengajuan'])) : '-' ?> | Tenor <?= $view_data['tenor_bulan'] ?> Bulan | Sisa Sebelum Bayar Rp <?= number_format($sisa_sebelum_bayar, 0, ',', '.') ?>
                     </option>
                   </select>
@@ -161,8 +162,8 @@ if (!isset($_GET["p"])) {
         const angsuranTerakhir = parseInt(selected.dataset.angsuranTerakhir || 0);
         const angsuranDipilih = parseInt(angsuranKe.value || 0);
         const jumlahBulan = Math.max(angsuranDipilih - angsuranTerakhir, 1);
-        const angsuranBulanan = tenor > 0 ? (jumlahPinjaman / tenor) + (jumlahPinjaman * (bungaPersen / 100)) : 0;
-        const bayar = Math.min(angsuranBulanan * jumlahBulan, sisaSebelum);
+        const angsuranBulanan = tenor > 0 ? (jumlahPinjaman * (1 + bungaPersen / 100 * (selected.dataset.basis === 'total' ? 1 : tenor))) / tenor : 0;
+        const bayar = angsuranDipilih >= tenor ? sisaSebelum : Math.min(Math.round(angsuranBulanan * 100) / 100 * jumlahBulan, sisaSebelum);
 
         jumlahBayar.value = bayar.toFixed(2);
         sisaPinjaman.value = Math.max(sisaSebelum - bayar, 0).toFixed(2);

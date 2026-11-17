@@ -52,7 +52,7 @@ require_once("../../templates/views_top.php"); ?>
   }
 </style>
 
-<div class="nxl-content" style="height: 100vh;">
+<div class="nxl-content">
 
   <!-- [ page-header ] start -->
   <div class="page-header">
@@ -93,6 +93,7 @@ require_once("../../templates/views_top.php"); ?>
 
   <!-- [ Main Content ] start -->
   <div class="main-content">
+    <?php require_once(__DIR__ . "/../../sections/ketentuan-koperasi.php"); ?>
     <div class="row">
       <div class="col-lg-12">
         <div class="card stretch stretch-full">

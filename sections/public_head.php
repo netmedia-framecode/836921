@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__ . "/../config/Koperasi.php");
 $publicTitle = $publicTitle ?? ($data_utilities['name_web'] ?? $name_website);
 $publicDescription = $publicDescription ?? ($data_utilities['description'] ?? 'Koperasi serba usaha yang membantu anggota mengelola simpanan, pinjaman, angsuran, dan informasi koperasi secara transparan.');
 $publicKeywords = $publicKeywords ?? ($data_utilities['keyword'] ?? 'koperasi, simpanan, pinjaman, angsuran');
@@ -9,6 +10,7 @@ $publicAuthor = $data_utilities['author'] ?? $publicTitle;
 
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="assets/img/logo-kop.png" type="image/png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="<?= htmlspecialchars($publicDescription) ?>">
   <meta name="keywords" content="<?= htmlspecialchars($publicKeywords) ?>">

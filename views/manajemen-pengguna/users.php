@@ -46,7 +46,7 @@ require_once("../../templates/views_top.php"); ?>
                     <td><?= $data['role'] ?></td>
                     <td>
                       <div class="hstack gap-2 justify-content-center">
-                        <?php if (canAction('edit')) { ?>
+                        <?php if (canAction('edit', 'manajemen-pengguna/users')) { ?>
                           <a href="edit-user?p=<?= $data['id_user']?>" class="btn btn-warning btn-sm">
                             <i class="bi bi-pencil-square"></i>
                           </a>

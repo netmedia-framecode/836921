@@ -2,7 +2,7 @@
 $_SESSION["project_ksu_st_karolus"]["name_page"] = "Data Pinjaman";
 require_once("../../templates/views_top.php"); ?>
 
-<div class="nxl-content" style="height: 100vh;">
+<div class="nxl-content">
 
   <!-- [ page-header ] start -->
   <div class="page-header">
@@ -61,33 +61,37 @@ require_once("../../templates/views_top.php"); ?>
                             <th class="text-center">Tanggal Pengajuan</th>
                             <th class="text-center">Tanggal Disetujui</th>
                             <th class="text-center">Validator</th>
-                            <th class="text-center">Aksi</th>
+                            <th class="text-center" data-orderable="false" data-searchable="false">Aksi</th>
                           </tr>
                         </thead>
                         <tbody>
                           <?php foreach ($views_pinjaman as $key => $data) { ?>
-                            <?php $can_edit_pinjaman = canAction('edit') && !($is_anggota_login && strtolower($data['status_pinjam']) == 'disetujui'); ?>
+                            <?php $can_edit_pinjaman = canAction('edit') && $data['status_pinjam'] === 'Pengajuan'; ?>
                             <tr class="single-item">
                               <td class="text-center"><?= $key + 1 ?></td>
                               <td><?= $data['nik'] ?></td>
                               <td><?= $data['nama_lengkap'] ?></td>
                               <td class="text-end">Rp <?= number_format($data['jumlah_pinjaman'], 0, ',', '.') ?></td>
                               <td class="text-center"><?= $data['tenor_bulan'] ?> Bulan</td>
-                              <td class="text-center"><?= $data['bunga_persen'] ?>%</td>
-                              <td class="text-center"><?= $data['status_pinjam'] ?></td>
+                              <td class="text-center"><?= $data['bunga_persen'] ?>% <?= $data['basis_bunga'] === 'total' ? 'total' : '/ bulan (lama)' ?></td>
+                              <td class="review-status"><?= htmlspecialchars($data['status_pinjam']) ?>
+                                <?php $jenis_pengajuan = 'pinjaman'; $pengajuan = $data; $review_mode = 'status'; require(__DIR__ . '/../../sections/review-pengajuan.php'); ?>
+                              </td>
                               <td class="text-center"><?= $data['tanggal_pengajuan'] ? date('d-m-Y', strtotime($data['tanggal_pengajuan'])) : '-' ?></td>
                               <td class="text-center"><?= $data['tanggal_disetujui'] ? date('d-m-Y', strtotime($data['tanggal_disetujui'])) : '-' ?></td>
                               <td><?= $data['nama_validator'] ?></td>
                               <td>
-                                <div class="hstack gap-2 justify-content-center">
+                                <div class="d-flex flex-wrap gap-2 justify-content-center financial-actions">
+                          <?php $review_mode = 'button'; require(__DIR__ . '/../../sections/review-pengajuan.php'); ?>
+                          <?php if (!$verifikasi_pengajuan && !$acc_pengajuan && !($data['status_pinjam'] === 'Pengajuan' && (canAction('edit') || canAction('delete')))) { ?><span class="text-muted">—</span><?php } ?>
                                   <?php if ($can_edit_pinjaman) { ?>
                                     <a href="edit-data-pinjaman?p=<?= $data['id_pinjaman'] ?>" class="btn btn-warning btn-sm">
-                                      <i class="bi bi-pencil-square"></i>
+                                      <i class="bi bi-pencil-square" aria-hidden="true"></i> Ubah
                                     </a>
                                   <?php } ?>
-                                  <?php if (canAction('delete')) { ?>
+                                  <?php if (canAction('delete') && $data['status_pinjam'] === 'Pengajuan') { ?>
                                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deletePinjaman<?= $data['id_pinjaman'] ?>">
-                                      <i class="bi bi-trash"></i>
+                                      <i class="bi bi-trash" aria-hidden="true"></i> Hapus
                                     </button>
                                   <?php } ?>
                                 </div>
@@ -108,6 +112,7 @@ require_once("../../templates/views_top.php"); ?>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                               </div>
                               <form action="" method="post">
+ <input type="hidden" name="csrf_simpanan" value="<?= htmlspecialchars($csrf_simpanan) ?>">
                                 <div class="modal-body">
                                   <input type="hidden" name="id_pinjaman" value="<?= $data['id_pinjaman'] ?>">
                                   <input type="hidden" name="nama_lengkap" value="<?= $data['nama_lengkap'] ?>">
@@ -115,7 +120,7 @@ require_once("../../templates/views_top.php"); ?>
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                  <?php if (canAction('delete')) { ?>
+                                  <?php if (canAction('delete') && $data['status_pinjam'] === 'Pengajuan') { ?>
                                     <button type="submit" name="delete_pinjaman" class="btn btn-danger">Hapus</button>
                                   <?php } ?>
                                 </div>
@@ -134,4 +139,11 @@ require_once("../../templates/views_top.php"); ?>
 
 </div>
 
+<?php
+if (mysqli_num_rows($views_pinjaman)) mysqli_data_seek($views_pinjaman, 0);
+foreach ($views_pinjaman as $pengajuan) {
+  $jenis_pengajuan = 'pinjaman'; $review_mode = 'modal';
+  require(__DIR__ . '/../../sections/review-pengajuan.php');
+}
+?>
 <?php require_once("../../templates/views_bottom.php") ?>

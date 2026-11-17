@@ -12,7 +12,7 @@ WHERE simpanan.id_simpanan = '$id' $filter_anggota_login";
   $store_data = mysqli_query($conn, $pull_data);
   $view_data = mysqli_fetch_assoc($store_data);
 
-  if (!$view_data) {
+  if (!$view_data || $view_data['status_simpanan'] !== 'Pengajuan' || !canAction('edit', 'manajemen-keuangan/data-simpanan')) {
     header("Location: data-simpanan");
     exit();
   }
@@ -20,7 +20,7 @@ WHERE simpanan.id_simpanan = '$id' $filter_anggota_login";
   $_SESSION["project_ksu_st_karolus"]["name_page"] = "Ubah Data Simpanan";
   require_once("../../templates/views_top.php"); ?>
 
-  <div class="nxl-content" style="height: 100vh;">
+  <div class="nxl-content">
 
     <!-- [ page-header ] start -->
     <div class="page-header">
@@ -43,6 +43,7 @@ WHERE simpanan.id_simpanan = '$id' $filter_anggota_login";
           <div class="card stretch stretch-full">
             <div class="card-body">
               <form action="" method="post">
+ <input type="hidden" name="csrf_simpanan" value="<?= htmlspecialchars($csrf_simpanan) ?>">
                 <input type="hidden" name="id_simpanan" value="<?= $view_data['id_simpanan'] ?>">
                 <div class="mb-3">
                   <label for="id_anggota" class="form-label">Anggota</label>
@@ -67,7 +68,7 @@ WHERE simpanan.id_simpanan = '$id' $filter_anggota_login";
                 </div>
                 <div class="mb-3">
                   <label for="jumlah" class="form-label">Jumlah</label>
-                  <input type="number" name="jumlah" class="form-control" id="jumlah" value="<?= $view_data['jumlah'] ?>" min="0" step="0.01" required>
+                  <input type="number" name="jumlah" class="form-control" id="jumlah" value="<?= $view_data['jumlah'] ?>" min="0.01" step="0.01" required>
                 </div>
                 <div class="mb-3">
                   <label for="tgl_simpanan" class="form-label">Tanggal Simpanan</label>

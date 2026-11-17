@@ -24,7 +24,7 @@ $dashboard_sum_count = function ($query) use ($conn) {
 };
 
 $dashboard_simpanan = $dashboard_sum_count("SELECT COALESCE(SUM(simpanan.jumlah), 0) AS total, COUNT(*) AS jumlah_data
-FROM simpanan
+FROM (SELECT * FROM simpanan WHERE status_simpanan='Disetujui') simpanan
 LEFT JOIN anggota ON simpanan.id_anggota=anggota.id_anggota
 $filter_dashboard_anggota");
 
@@ -56,7 +56,7 @@ FROM (
     pinjaman.id_pinjaman,
     COALESCE(
       (SELECT angsuran.sisa_pinjaman FROM angsuran WHERE angsuran.id_pinjaman=pinjaman.id_pinjaman ORDER BY angsuran.id_angsuran DESC LIMIT 1),
-      (pinjaman.jumlah_pinjaman + (pinjaman.jumlah_pinjaman * (pinjaman.bunga_persen / 100) * pinjaman.tenor_bulan))
+      (pinjaman.jumlah_pinjaman * (1 + pinjaman.bunga_persen / 100 * CASE WHEN pinjaman.basis_bunga='total' THEN 1 ELSE pinjaman.tenor_bulan END))
     ) AS sisa_terakhir
   FROM pinjaman
   LEFT JOIN anggota ON pinjaman.id_anggota=anggota.id_anggota
@@ -79,7 +79,7 @@ for ($month = 1; $month <= 12; $month++) {
 
 $dashboard_chart_query = mysqli_query($conn, "
   SELECT 'Simpanan' AS sumber, simpanan.jumlah AS nominal, simpanan.tgl_simpanan AS tanggal
-  FROM simpanan
+  FROM (SELECT * FROM simpanan WHERE status_simpanan='Disetujui') simpanan
   LEFT JOIN anggota ON simpanan.id_anggota=anggota.id_anggota
   $filter_dashboard_anggota
 
@@ -135,7 +135,7 @@ if ($dashboard_status_query) {
 
 $dashboard_recent_query = mysqli_query($conn, "
   SELECT 'Simpanan' AS kategori, simpanan.tgl_simpanan AS tanggal, anggota.nama_lengkap AS anggota, simpanan.jumlah AS nominal, simpanan.jenis_simpanan AS detail
-  FROM simpanan
+  FROM (SELECT * FROM simpanan WHERE status_simpanan='Disetujui') simpanan
   LEFT JOIN anggota ON simpanan.id_anggota=anggota.id_anggota
   $filter_dashboard_anggota
 
@@ -164,8 +164,6 @@ if ($dashboard_recent_query) {
 }
 
 $dashboard_info_query = mysqli_query($conn, "
-  SELECT 'Berita' AS tipe, judul, tgl_buat AS tanggal FROM berita
-  UNION ALL
   SELECT 'Pengumuman' AS tipe, judul, tgl_posting AS tanggal FROM pengumuman
   UNION ALL
   SELECT 'Kebijakan' AS tipe, judul, tgl_ubah AS tanggal FROM kebijakan_koperasi

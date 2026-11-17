@@ -66,7 +66,7 @@ $badgeClass = function ($value) {
   }
 </style>
 
-<div class="nxl-content" style="min-height: 100vh;">
+<div class="nxl-content">
   <div class="page-header">
     <div class="page-header-left d-flex align-items-center">
       <div class="page-header-title">
@@ -103,6 +103,7 @@ $badgeClass = function ($value) {
   </div>
 
   <div class="main-content">
+    <?php if ($is_anggota_login) { require_once(__DIR__ . "/../sections/persyaratan.php"); } ?>
     <div class="row g-4">
       <?php if ($is_anggota_login) { ?>
         <div class="col-xxl-3 col-md-6">
@@ -235,7 +236,7 @@ $badgeClass = function ($value) {
     </div>
 
     <div class="row g-4 mt-1">
-      <div class="col-xl-7">
+      <div class="<?= $is_anggota_login ? 'col-xl-7' : 'col-12' ?>">
         <div class="card dashboard-panel stretch stretch-full">
           <div class="card-body">
             <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
@@ -266,15 +267,16 @@ $badgeClass = function ($value) {
           </div>
         </div>
       </div>
+      <?php if ($is_anggota_login) { ?>
       <div class="col-xl-5">
         <div class="card dashboard-panel stretch stretch-full">
           <div class="card-body">
             <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
               <div>
                 <h5 class="mb-1">Informasi Terbaru</h5>
-                <span class="text-muted">Berita, pengumuman, dan kebijakan koperasi</span>
+                <span class="text-muted">Pengumuman dan kebijakan koperasi</span>
               </div>
-              <a href="pusat-informasi/berita" class="btn btn-light btn-sm">Pusat Info</a>
+              <a href="pusat-informasi/kebijakan-koperasi" class="btn btn-light btn-sm">Pusat Info</a>
             </div>
             <?php if (!empty($dashboard_info)) { ?>
               <div class="dashboard-list">
@@ -294,6 +296,7 @@ $badgeClass = function ($value) {
           </div>
         </div>
       </div>
+      <?php } ?>
     </div>
   </div>
 </div>

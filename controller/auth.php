@@ -3,13 +3,14 @@
 require_once("../config/Base.php");
 require_once("../config/Alert.php");
 
-if (isset($_POST["register"])) {
-  $validated_post = array_map(function ($value) use ($conn) {
-    return valid($conn, $value);
-  }, $_POST);
-  if (register($conn, $validated_post, $action = 'insert') > 0) {
-    header("Location: verification?en=" . $_SESSION['data_auth']['en_user']);
-    exit();
+if (empty($_SESSION['csrf_register'])) $_SESSION['csrf_register'] = bin2hex(random_bytes(32));
+if (isset($_POST['register'])) {
+  $token = $_POST['csrf_register'] ?? '';
+  if (!is_string($token) || !hash_equals($_SESSION['csrf_register'], $token)) {
+    http_response_code(403); exit('Sesi formulir tidak valid. Muat ulang halaman.');
+  }
+  if (register($conn, $_POST, 'insert') > 0) {
+    header('Location: verification?en=' . urlencode($_SESSION['data_auth']['en_user'])); exit();
   }
 }
 if (isset($_POST["re_verifikasi"])) {

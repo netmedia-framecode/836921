@@ -22,16 +22,6 @@
 <link rel="stylesheet" type="text/css" href="<?= $baseURL ?>assets/vendor/css/dataTables.bs5.min.css">
 <link rel="stylesheet" type="text/css" href="<?= $baseURL ?>assets/vendor/css/select2.min.css">
 <link rel="stylesheet" type="text/css" href="<?= $baseURL ?>assets/vendor/css/select2-theme.min.css">
-<link rel="stylesheet" type="text/css" href="<?= $baseURL ?>assets/css/theme.min.css" />
+<link rel="stylesheet" type="text/css" href="<?= $baseURL ?>assets/css/theme.min.css?v=<?= filemtime(__DIR__ . "/../assets/css/theme.min.css") ?>" />
 <link rel="stylesheet" type="text/css" href="<?= $baseURL ?>assets/vendor/datatables/dataTables.bootstrap4.min.css">
 <script src="<?= $baseURL ?>assets/sweetalert/dist/sweetalert2.all.min.js"></script>
-
-<style>
-  /* Ganti .main-content dengan class pembungkus tabel/konten Anda */
-  .main-content,
-  .page-content,
-  .content {
-    min-height: calc(100vh - 120px);
-    /* 120px adalah perkiraan total tinggi navbar atas + footer */
-  }
-</style>

@@ -2,7 +2,7 @@
 $_SESSION["project_ksu_st_karolus"]["name_page"] = "Tambah Data Angsuran";
 require_once("../../templates/views_top.php"); ?>
 
-<div class="nxl-content" style="height: 100vh;">
+<div class="nxl-content">
 
   <!-- [ page-header ] start -->
   <div class="page-header">
@@ -31,7 +31,7 @@ require_once("../../templates/views_top.php"); ?>
                 <select name="id_pinjaman" class="form-control" id="id_pinjaman" data-select2-selector="default" required>
                   <option value="">Pilih Pinjaman</option>
                   <?php foreach ($views_pinjaman_angsuran as $data_pinjaman) { ?>
-                    <option value="<?= $data_pinjaman['id_pinjaman'] ?>" data-sisa="<?= $data_pinjaman['sisa_pinjaman_terakhir'] ?>" data-angsuran-terakhir="<?= $data_pinjaman['angsuran_terakhir'] ?>" data-jumlah-pinjaman="<?= $data_pinjaman['jumlah_pinjaman'] ?>" data-tenor="<?= $data_pinjaman['tenor_bulan'] ?>" data-bunga="<?= $data_pinjaman['bunga_persen'] ?>">
+                    <option value="<?= $data_pinjaman['id_pinjaman'] ?>" data-sisa="<?= $data_pinjaman['sisa_pinjaman_terakhir'] ?>" data-angsuran-terakhir="<?= $data_pinjaman['angsuran_terakhir'] ?>" data-jumlah-pinjaman="<?= $data_pinjaman['jumlah_pinjaman'] ?>" data-tenor="<?= $data_pinjaman['tenor_bulan'] ?>" data-bunga="<?= $data_pinjaman['bunga_persen'] ?>" data-basis="<?= htmlspecialchars($data_pinjaman['basis_bunga']) ?>">
                       <?= $data_pinjaman['nik'] . ' - ' . $data_pinjaman['nama_lengkap'] ?> | Tanggal <?= $data_pinjaman['tanggal_pengajuan'] ? date('d-m-Y', strtotime($data_pinjaman['tanggal_pengajuan'])) : '-' ?> | Tenor <?= $data_pinjaman['tenor_bulan'] ?> Bulan | Sisa Rp <?= number_format($data_pinjaman['sisa_pinjaman_terakhir'], 0, ',', '.') ?> | Angsuran berikutnya <?= $data_pinjaman['angsuran_terakhir'] + 1 ?> dari <?= $data_pinjaman['tenor_bulan'] ?>
                     </option>
                   <?php } ?>
@@ -128,8 +128,8 @@ require_once("../../templates/views_top.php"); ?>
       const angsuranTerakhir = parseInt(selected.dataset.angsuranTerakhir || 0);
       const angsuranDipilih = parseInt(angsuranKe.value || 0);
       const jumlahBulan = Math.max(angsuranDipilih - angsuranTerakhir, 1);
-      const angsuranBulanan = tenor > 0 ? (jumlahPinjaman / tenor) + (jumlahPinjaman * (bungaPersen / 100)) : 0;
-      const bayar = Math.min(angsuranBulanan * jumlahBulan, sisaSebelum);
+      const angsuranBulanan = tenor > 0 ? (jumlahPinjaman * (1 + bungaPersen / 100 * (selected.dataset.basis === 'total' ? 1 : tenor))) / tenor : 0;
+      const bayar = angsuranDipilih >= tenor ? sisaSebelum : Math.min(Math.round(angsuranBulanan * 100) / 100 * jumlahBulan, sisaSebelum);
 
       jumlahBayar.value = bayar.toFixed(2);
       sisaPinjaman.value = Math.max(sisaSebelum - bayar, 0).toFixed(2);

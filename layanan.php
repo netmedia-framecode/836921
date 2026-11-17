@@ -10,7 +10,7 @@ require_once("sections/public_navbar.php");
 ?>
 
 <header class="relative overflow-hidden bg-slate-950 pt-28">
-  <img src="assets/img/auth/auth.png" alt="Layanan <?= htmlspecialchars($publicWebName) ?>" class="absolute inset-0 h-full w-full object-cover opacity-25">
+  <img src="assets/img/kantor.jpeg" alt="Layanan <?= htmlspecialchars($publicWebName) ?>" class="absolute inset-0 h-full w-full object-cover opacity-25">
   <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950/85 to-blue-950/80"></div>
   <div class="relative mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[1.05fr_.95fr] lg:px-8">
     <div class="text-white">
@@ -38,9 +38,9 @@ require_once("sections/public_navbar.php");
           <?php
           $heroItems = [
             ['Simpanan', 'Riwayat dan pencatatan anggota'],
-            ['Pinjaman', 'Pengajuan dan validasi bendahara'],
+            ['Pinjaman', 'Pemeriksaan berkas dan ACC kepala koperasi'],
             ['Angsuran', 'Pembayaran dan sisa pinjaman'],
-            ['Informasi', 'Berita, pengumuman, dan kebijakan']
+            ['Informasi', 'Pengumuman, dan kebijakan']
           ];
           foreach ($heroItems as $item) { ?>
             <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
@@ -85,7 +85,7 @@ require_once("sections/public_navbar.php");
             'accent' => 'bg-amber-50 text-amber-600',
             'icon' => '<path d="M4 6h16v12H4z" /><path d="M8 10h8M8 14h5" />',
             'desc' => 'Membantu anggota mengajukan pinjaman dan memudahkan bendahara melakukan pemeriksaan.',
-            'points' => ['Pengajuan anggota', 'Status pinjaman', 'Validasi bendahara']
+            'points' => ['Pengajuan anggota', 'Status pinjaman', 'Pemeriksaan admin/bendahara', 'ACC kepala koperasi']
           ],
           [
             'title' => 'Pembayaran Angsuran',
@@ -105,8 +105,8 @@ require_once("sections/public_navbar.php");
             'title' => 'Pusat Informasi',
             'accent' => 'bg-violet-50 text-violet-600',
             'icon' => '<path d="M4 5h16v14H4z" /><path d="M8 9h8M8 13h5" />',
-            'desc' => 'Mengelola berita, pengumuman, dan kebijakan koperasi agar informasi resmi mudah ditemukan.',
-            'points' => ['Berita koperasi', 'Pengumuman', 'Kebijakan']
+            'desc' => 'Mengelola pengumuman, dan kebijakan koperasi agar informasi resmi mudah ditemukan.',
+            'points' => ['Pengumuman', 'Kebijakan koperasi']
           ],
           [
             'title' => 'Manajemen Pengguna',

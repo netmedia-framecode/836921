@@ -83,7 +83,7 @@ $kategoriBadgeClass = function ($kategori) {
   }
 </style>
 
-<div class="nxl-content" style="min-height: 100vh;">
+<div class="nxl-content">
 
   <!-- [ page-header ] start -->
   <div class="page-header">

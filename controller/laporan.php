@@ -18,7 +18,7 @@ if (isset($_GET['export_transaksi_excel'])) {
       'title' => 'Simpanan',
       'headers' => ['ID', 'NIK', 'Nama Anggota', 'Jenis Simpanan', 'Jumlah', 'Tanggal Simpanan', 'Penerima'],
       'query' => "SELECT simpanan.id_simpanan, anggota.nik, anggota.nama_lengkap, simpanan.jenis_simpanan, simpanan.jumlah, simpanan.tgl_simpanan, users.name AS penerima
-        FROM simpanan
+        FROM (SELECT * FROM simpanan WHERE status_simpanan='Disetujui') simpanan
         LEFT JOIN anggota ON simpanan.id_anggota=anggota.id_anggota
         LEFT JOIN users ON simpanan.id_penerima=users.id_user
         $filter_laporan_anggota
@@ -27,14 +27,14 @@ if (isset($_GET['export_transaksi_excel'])) {
     ],
     [
       'title' => 'Pinjaman',
-      'headers' => ['ID', 'NIK', 'Nama Anggota', 'Jumlah Pinjaman', 'Tenor Bulan', 'Bunga Persen', 'Status', 'Tanggal Pengajuan', 'Tanggal Disetujui', 'Validator'],
-      'query' => "SELECT pinjaman.id_pinjaman, anggota.nik, anggota.nama_lengkap, pinjaman.jumlah_pinjaman, pinjaman.tenor_bulan, pinjaman.bunga_persen, pinjaman.status_pinjam, pinjaman.tanggal_pengajuan, pinjaman.tanggal_disetujui, users.name AS validator
+      'headers' => ['ID', 'NIK', 'Nama Anggota', 'Jumlah Pinjaman', 'Tenor Bulan', 'Bunga Persen', 'Dasar Bunga', 'Status', 'Tanggal Pengajuan', 'Tanggal Disetujui', 'Validator'],
+      'query' => "SELECT pinjaman.id_pinjaman, anggota.nik, anggota.nama_lengkap, pinjaman.jumlah_pinjaman, pinjaman.tenor_bulan, pinjaman.bunga_persen, pinjaman.basis_bunga, pinjaman.status_pinjam, pinjaman.tanggal_pengajuan, pinjaman.tanggal_disetujui, users.name AS validator
         FROM pinjaman
         LEFT JOIN anggota ON pinjaman.id_anggota=anggota.id_anggota
         LEFT JOIN users ON pinjaman.id_validator=users.id_user
         $filter_laporan_anggota
         ORDER BY pinjaman.tanggal_pengajuan DESC",
-      'fields' => ['id_pinjaman', 'nik', 'nama_lengkap', 'jumlah_pinjaman', 'tenor_bulan', 'bunga_persen', 'status_pinjam', 'tanggal_pengajuan', 'tanggal_disetujui', 'validator']
+      'fields' => ['id_pinjaman', 'nik', 'nama_lengkap', 'jumlah_pinjaman', 'tenor_bulan', 'bunga_persen', 'basis_bunga', 'status_pinjam', 'tanggal_pengajuan', 'tanggal_disetujui', 'validator']
     ],
     [
       'title' => 'Angsuran',
@@ -92,7 +92,7 @@ if (isset($_GET['export_transaksi_excel'])) {
 }
 
 $total_simpanan_query = mysqli_query($conn, "SELECT COALESCE(SUM(simpanan.jumlah), 0) AS total, COUNT(*) AS jumlah_data
-FROM simpanan
+FROM (SELECT * FROM simpanan WHERE status_simpanan='Disetujui') simpanan
 LEFT JOIN anggota ON simpanan.id_anggota=anggota.id_anggota
 $filter_laporan_anggota");
 $total_simpanan_data = mysqli_fetch_assoc($total_simpanan_query);
@@ -131,7 +131,7 @@ $select_laporan_transaksi = "
     users.name AS petugas,
     '-' AS status,
     '-' AS keterangan
-  FROM simpanan
+  FROM (SELECT * FROM simpanan WHERE status_simpanan='Disetujui') simpanan
   LEFT JOIN anggota ON simpanan.id_anggota=anggota.id_anggota
   LEFT JOIN users ON simpanan.id_penerima=users.id_user
   $filter_laporan_anggota
@@ -148,7 +148,7 @@ $select_laporan_transaksi = "
     pinjaman.tanggal_pengajuan AS tanggal,
     users.name AS petugas,
     pinjaman.status_pinjam AS status,
-    CONCAT('Tenor ', pinjaman.tenor_bulan, ' bulan, bunga ', pinjaman.bunga_persen, '%') AS keterangan
+    CONCAT('Tenor ', pinjaman.tenor_bulan, ' bulan, bunga ', pinjaman.bunga_persen, '% ', pinjaman.basis_bunga) AS keterangan
   FROM pinjaman
   LEFT JOIN anggota ON pinjaman.id_anggota=anggota.id_anggota
   LEFT JOIN users ON pinjaman.id_validator=users.id_user
@@ -248,7 +248,7 @@ $monitoring_kinerja_query = mysqli_query($conn, "
   LEFT JOIN user_role ON users.id_role=user_role.id_role
   LEFT JOIN (
     SELECT id_penerima, COUNT(*) AS jumlah_simpanan, COALESCE(SUM(jumlah), 0) AS total_simpanan
-    FROM simpanan
+    FROM (SELECT * FROM simpanan WHERE status_simpanan='Disetujui') simpanan
     GROUP BY id_penerima
   ) simpanan_staff ON simpanan_staff.id_penerima=users.id_user
   LEFT JOIN (
@@ -311,7 +311,7 @@ $aktivitas_terbaru_query = mysqli_query($conn, "
     users.name AS petugas,
     simpanan.jumlah AS nominal,
     simpanan.jenis_simpanan AS detail
-  FROM simpanan
+  FROM (SELECT * FROM simpanan WHERE status_simpanan='Disetujui') simpanan
   LEFT JOIN anggota ON simpanan.id_anggota=anggota.id_anggota
   LEFT JOIN users ON simpanan.id_penerima=users.id_user
 
