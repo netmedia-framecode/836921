@@ -232,18 +232,6 @@ if (!isset($_GET["p"])) {
                   <small class="text-muted d-block">Tanggal Disetujui</small>
                   <strong><?= $view_data['tanggal_disetujui'] ? date('d-m-Y', strtotime($view_data['tanggal_disetujui'])) : '-' ?></strong>
                 </div>
-                <div class="col-md-6">
-                  <small class="text-muted d-block">Jenis Anggota</small>
-                  <strong><?= $view_data['jenis_anggota'] ?: '-' ?></strong>
-                </div>
-                <div class="col-md-6">
-                  <small class="text-muted d-block">No. Telp</small>
-                  <strong><?= $view_data['no_telp'] ?: '-' ?></strong>
-                </div>
-                <div class="col-12">
-                  <small class="text-muted d-block">Alamat</small>
-                  <strong><?= $view_data['alamat'] ?: '-' ?></strong>
-                </div>
               </div>
             </div>
           </div>

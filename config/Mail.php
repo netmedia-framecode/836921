@@ -15,11 +15,11 @@ function smtp_mail($to, $subject, $message, $from_name, $from, $cc, $bcc, $debug
   $mail->ClearCCs();
   $mail->ClearBCCs();
   $mail->SMTPAuth         = true;
-  $mail->Host             = "tugasakhir.my.id;103.251.44.248";
+  $mail->Host             = "tugasakhir.my.id;202.74.239.26";
   $mail->Port             = 587;
   $mail->SMTPSecure       = "tls";
   $mail->Username         = "no-reply@tugasakhir.my.id";
-  $mail->Password         = "Netmedia040700_";
+  $mail->Password         = "Evelyn220700_";
   $default_email_from     = "no-reply@tugasakhir.my.id";
   $default_email_from_name = "KSU St Karolus";
   if (empty($from)) $mail->From = $default_email_from;

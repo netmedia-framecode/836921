@@ -11,6 +11,7 @@ require_once(__DIR__ . "/../assets/vendor/autoload.php");
 require_once(__DIR__ . "/../config/Mail.php");
 require_once(__DIR__ . "/../controller/Functions.php");
 
+// $baseURL = "https://$_SERVER[HTTP_HOST]/";
 $baseURL = "http://$_SERVER[HTTP_HOST]/apps/website/tugas/ksu_st_karolus/";
 $hostname = $_SERVER['HTTP_HOST'];
 $port = $_SERVER['SERVER_PORT'];

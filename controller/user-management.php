@@ -1,15 +1,53 @@
 <?php
 
 require_once("../../config/Base.php");
+require_once("../../views/manajemen-pengguna/redirect.php");
 require_once("../../config/Auth.php");
 require_once("../../config/Alert.php");
 require_once("../../views/manajemen-pengguna/redirect.php");
+
+require_once(__DIR__ . '/tambah-user.php');
+$can_create_user = canAction('create', 'manajemen-pengguna/users');
+if (empty($_SESSION['csrf_tambah_user'])) $_SESSION['csrf_tambah_user'] = bin2hex(random_bytes(32));
+$add_user_error = '';
+$add_user_values = ['name'=>'', 'email'=>'', 'id_role'=>'', 'id_active'=>''];
+if (isset($_POST['add_user'])) {
+  $csrf = $_POST['csrf_tambah_user'] ?? '';
+  if (!$can_create_user || !is_string($csrf) || !hash_equals($_SESSION['csrf_tambah_user'], $csrf)) {
+    http_response_code(403); exit('Permintaan tidak diizinkan. Muat ulang halaman dan coba kembali.');
+  }
+  foreach ($add_user_values as $field=>$value) $add_user_values[$field] = is_string($_POST[$field] ?? null) ? $_POST[$field] : '';
+  $attempts = $_SESSION['tambah_user_attempts'] ?? ['count'=>0, 'until'=>0];
+  if ($attempts['until'] <= time()) $attempts = ['count'=>0, 'until'=>time()+300];
+  if ($attempts['count'] >= 5) {
+    $add_user_error = 'Terlalu banyak password konfirmasi yang salah. Coba lagi dalam 5 menit.';
+  } else {
+    try {
+      buatUserDenganKonfirmasi($conn, (int)$_SESSION['project_ksu_st_karolus']['users']['id'], $_POST);
+      unset($_SESSION['tambah_user_attempts']);
+      $_SESSION['csrf_tambah_user'] = bin2hex(random_bytes(32));
+      alert('User baru berhasil ditambahkan.', 'success');
+      header('Location: users'); exit();
+    } catch (DomainException $exception) {
+      $attempts['count']++;
+      $_SESSION['tambah_user_attempts'] = $attempts;
+      $add_user_error = $exception->getMessage();
+    } catch (InvalidArgumentException $exception) {
+      $add_user_error = $exception->getMessage();
+    } catch (Throwable $exception) {
+      error_log('Tambah user gagal: '.$exception->getMessage());
+      $add_user_error = 'User gagal dibuat. Periksa hak akses dan data akun, lalu coba kembali.';
+    }
+  }
+}
+$add_user_roles = mysqli_query($conn, "SELECT id_role,role FROM user_role WHERE LOWER(role) IN ('developer','bendahara','administrator','ketua koperasi') ORDER BY role");
 
 $select_users = "SELECT users.*, user_role.role, user_status.status
 FROM users
 JOIN user_role ON users.id_role=user_role.id_role
 JOIN user_status ON users.id_active=user_status.id_status
-WHERE LOWER(user_role.role) != 'anggota' AND LOWER(user_role.role) != 'administrator'
+WHERE LOWER(user_role.role) IN ('developer','bendahara','administrator','ketua koperasi')
+ORDER BY users.id_user ASC
 ";
 $views_users = mysqli_query($conn, $select_users);
 $select_user_role = "SELECT * FROM user_role";

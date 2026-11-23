@@ -1,9 +1,19 @@
 <?php
 
 require_once("../../config/Base.php");
+require_once("../../views/laporan/redirect.php");
 require_once("../../config/Auth.php");
 require_once("../../config/Alert.php");
 require_once("../../views/laporan/redirect.php");
+
+$jenis_laporan = $jenis_laporan ?? null;
+if ($jenis_laporan !== null && !in_array($jenis_laporan, ['simpanan', 'pinjaman'], true)) {
+  http_response_code(404); exit('Laporan tidak ditemukan.');
+}
+if ($jenis_laporan !== null && !canAction('view', 'laporan/transaksi-' . $jenis_laporan)) {
+  http_response_code(403); exit('Anda tidak memiliki akses laporan ini.');
+}
+$is_laporan_simpanan = $jenis_laporan === 'simpanan';
 
 $is_anggota_login = in_array(strtolower($role), ['anggota', 'member']);
 $filter_laporan_anggota = $is_anggota_login ? " WHERE anggota.id_user = '$id_user'" : "";
@@ -50,6 +60,11 @@ if (isset($_GET['export_transaksi_excel'])) {
     ]
   ];
 
+  if ($jenis_laporan !== null) {
+    $sheet_configs = array_values(array_filter($sheet_configs, function ($config) use ($is_laporan_simpanan) {
+      return $is_laporan_simpanan ? $config['title'] === 'Simpanan' : $config['title'] !== 'Simpanan';
+    }));
+  }
   foreach ($sheet_configs as $sheet_index => $config) {
     $sheet = $sheet_index === 0 ? $spreadsheet->getActiveSheet() : $spreadsheet->createSheet();
     $sheet->setTitle($config['title']);
@@ -80,7 +95,7 @@ if (isset($_GET['export_transaksi_excel'])) {
   }
 
   $spreadsheet->setActiveSheetIndex(0);
-  $filename = "laporan-transaksi-" . date('Ymd-His') . ".xlsx";
+  $filename = "laporan-transaksi-" . ($jenis_laporan ? $jenis_laporan . "-" : "") . date('Ymd-His') . ".xlsx";
 
   header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
   header('Content-Disposition: attachment; filename="' . $filename . '"');
@@ -116,6 +131,11 @@ $total_pinjaman = (float) $total_pinjaman_data['total'];
 $jumlah_pinjaman = (int) $total_pinjaman_data['jumlah_data'];
 $total_angsuran = (float) $total_angsuran_data['total'];
 $jumlah_angsuran = (int) $total_angsuran_data['jumlah_data'];
+if ($jenis_laporan === 'simpanan') {
+  $total_pinjaman = $total_angsuran = $jumlah_pinjaman = $jumlah_angsuran = 0;
+} elseif ($jenis_laporan === 'pinjaman') {
+  $total_simpanan = $jumlah_simpanan = 0;
+}
 $total_transaksi_keuangan = $total_simpanan + $total_pinjaman + $total_angsuran;
 $jumlah_transaksi_keuangan = $jumlah_simpanan + $jumlah_pinjaman + $jumlah_angsuran;
 
@@ -173,6 +193,10 @@ $select_laporan_transaksi = "
   LEFT JOIN users ON angsuran.id_penerima=users.id_user
   $filter_laporan_anggota
   ORDER BY tanggal DESC";
+if ($jenis_laporan !== null) {
+  $sumber_laporan = $is_laporan_simpanan ? "'Simpanan'" : "'Pinjaman','Angsuran'";
+  $select_laporan_transaksi = "SELECT * FROM ($select_laporan_transaksi) laporan WHERE sumber IN ($sumber_laporan) ORDER BY tanggal DESC";
+}
 $views_laporan_transaksi = mysqli_query($conn, $select_laporan_transaksi);
 
 $laporan_transaksi = [];

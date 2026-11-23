@@ -2,14 +2,21 @@
 
 function buatAkunAnggota($conn, array $data)
 {
+  $labels = ['name'=>'Nama Akun', 'nama_lengkap'=>'Nama Lengkap', 'email'=>'Email', 'nik'=>'NIK', 'no_telp'=>'No. Telepon', 'alamat'=>'Alamat'];
   foreach (['name'=>100, 'nama_lengkap'=>150, 'email'=>75, 'nik'=>20, 'no_telp'=>20, 'alamat'=>2000] as $field=>$max) {
     if (!isset($data[$field]) || !is_string($data[$field]) || trim($data[$field]) === '' || mb_strlen(trim($data[$field])) > $max) {
-      throw new InvalidArgumentException('Lengkapi data akun dan identitas anggota dengan benar.');
+      throw new InvalidArgumentException($labels[$field].' wajib diisi dan maksimal '.$max.' karakter.');
     }
     $data[$field] = trim($data[$field]);
   }
-  if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL) || !preg_match('/^[0-9]{16,20}$/', $data['nik']) || !preg_match('/^\+?[0-9 ()-]{8,20}$/', $data['no_telp'])) {
-    throw new InvalidArgumentException('Email, NIK (16–20 digit), atau nomor telepon tidak valid.');
+  if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+    throw new InvalidArgumentException('Email tidak valid. Masukkan alamat email yang benar.');
+  }
+  if (!preg_match('/^[0-9]{16,20}$/', $data['nik'])) {
+    throw new InvalidArgumentException('NIK harus berisi 16–20 digit angka.');
+  }
+  if (!preg_match('/^\+?[0-9 ()-]{8,20}$/', $data['no_telp'])) {
+    throw new InvalidArgumentException('No. Telepon tidak valid. Isi dengan nomor telepon, misalnya 081234567890, bukan alamat email.');
   }
   if (!is_string($data['password'] ?? null) || strlen($data['password']) < 6 || strlen($data['password']) > 100 || $data['password'] !== ($data['re_password'] ?? null)) {
     throw new InvalidArgumentException('Password minimal 6 karakter dan konfirmasi password harus sama.');

@@ -2,7 +2,8 @@
 <?php foreach (['name'=>['Nama Akun','text',100], 'email'=>['Email','email',75], 'nama_lengkap'=>['Nama Lengkap','text',150], 'nik'=>['NIK','text',20], 'no_telp'=>['No. Telepon','tel',20]] as $field=>$detail) { ?>
 <div class="mb-3">
   <label for="<?= $field ?>" class="form-label"><?= $detail[0] ?></label>
-  <input id="<?= $field ?>" name="<?= $field ?>" type="<?= $detail[1] ?>" class="form-control" maxlength="<?= $detail[2] ?>" value="<?= htmlspecialchars(is_string($_POST[$field] ?? null) ? $_POST[$field] : '') ?>" <?= $field === 'nik' ? 'pattern="[0-9]{16,20}" inputmode="numeric" minlength="16"' : '' ?> required>
+  <input id="<?= $field ?>" name="<?= $field ?>" type="<?= $detail[1] ?>" class="form-control" maxlength="<?= $detail[2] ?>" autocomplete="<?= ['name'=>'nickname', 'email'=>'email', 'nama_lengkap'=>'name', 'nik'=>'off', 'no_telp'=>'tel'][$field] ?>" value="<?= htmlspecialchars(is_string($_POST[$field] ?? null) ? $_POST[$field] : '') ?>" <?= $field === 'nik' ? 'pattern="[0-9]{16,20}" inputmode="numeric" minlength="16"' : '' ?> <?= $field === 'no_telp' ? 'pattern="[+]?[0-9 \(\)\-]{8,20}" inputmode="tel" placeholder="081234567890" title="Isi nomor telepon, bukan alamat email." aria-describedby="no-telp-help"' : '' ?> required>
+  <?php if ($field === 'no_telp') { ?><small id="no-telp-help" class="text-muted">Isi nomor telepon aktif, misalnya 081234567890 atau +6281234567890.</small><?php } ?>
 </div>
 <?php } ?>
 <div class="mb-3"><label for="alamat" class="form-label">Alamat</label><textarea id="alamat" name="alamat" class="form-control" rows="3" maxlength="2000" required><?= htmlspecialchars(is_string($_POST['alamat'] ?? null) ? $_POST['alamat'] : '') ?></textarea></div>

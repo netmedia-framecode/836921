@@ -149,7 +149,7 @@ CREATE TABLE keuangan (
 CREATE TABLE anggota (
     id_anggota INT AUTO_INCREMENT PRIMARY KEY,
     id_user INT,
-    nik VARCHAR(20) NULL UNIQUE,
+    nik VARCHAR(20) NOT NULL UNIQUE,
     nama_lengkap VARCHAR(150) NOT NULL,
     jenis_anggota VARCHAR(50),
     no_telp VARCHAR(20),
@@ -164,11 +164,6 @@ CREATE TABLE simpanan (
     id_anggota INT,
     id_penerima INT,
     jenis_simpanan VARCHAR(50) NOT NULL,
-    status_simpanan VARCHAR(20) NOT NULL DEFAULT 'Pengajuan',
-    id_reviewer INT NULL,
-    waktu_review DATETIME NULL,
-    catatan_review TEXT NULL,
-    FOREIGN KEY (id_reviewer) REFERENCES users(id_user),
     jumlah DECIMAL(15, 2) NOT NULL,
     tgl_simpanan DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_anggota) REFERENCES anggota (id_anggota) ON UPDATE NO ACTION ON DELETE NO ACTION,
@@ -202,33 +197,3 @@ CREATE TABLE angsuran (
     FOREIGN KEY (id_pinjaman) REFERENCES pinjaman (id_pinjaman) ON UPDATE NO ACTION ON DELETE NO ACTION,
     FOREIGN KEY (id_penerima) REFERENCES users (id_user) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
-
-CREATE TABLE ketentuan_rat (
- id_rat INT AUTO_INCREMENT PRIMARY KEY,
- tahun SMALLINT NOT NULL,
- bunga_persen DECIMAL(5,2) NOT NULL,
- tenor_bulan INT NOT NULL,
- simpanan_pokok DECIMAL(15,2) NULL,
- dibuat_oleh INT NULL,
- dibuat_pada DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
- FOREIGN KEY (dibuat_oleh) REFERENCES users(id_user)
-);
-INSERT INTO ketentuan_rat(tahun,bunga_persen,tenor_bulan,simpanan_pokok) VALUES(2025,6,12,NULL);
-ALTER TABLE simpanan
- ADD COLUMN id_rat INT NULL,
- ADD COLUMN id_pemeriksa INT NULL,
- ADD COLUMN waktu_pemeriksaan DATETIME NULL,
- ADD COLUMN catatan_pemeriksaan TEXT NULL,
- ADD FOREIGN KEY (id_rat) REFERENCES ketentuan_rat(id_rat),
- ADD FOREIGN KEY (id_pemeriksa) REFERENCES users(id_user);
-ALTER TABLE pinjaman
- ADD COLUMN id_rat INT NULL,
- ADD COLUMN basis_bunga VARCHAR(15) NOT NULL DEFAULT 'bulanan',
- ADD COLUMN id_pemeriksa INT NULL,
- ADD COLUMN waktu_pemeriksaan DATETIME NULL,
- ADD COLUMN catatan_pemeriksaan TEXT NULL,
- ADD COLUMN catatan_review TEXT NULL,
- ADD COLUMN waktu_review DATETIME NULL,
- ADD FOREIGN KEY (id_rat) REFERENCES ketentuan_rat(id_rat),
- ADD FOREIGN KEY (id_pemeriksa) REFERENCES users(id_user);
--- Pinjaman lama tetap memakai basis bulanan yang berlaku pada kode sebelumnya.

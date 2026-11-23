@@ -15,6 +15,11 @@ require_once("../../templates/views_top.php"); ?>
         <li class="breadcrumb-item"><?= $_SESSION['project_ksu_st_karolus']['name_page'] ?></li>
       </ul>
     </div>
+    <?php if ($can_create_user) { ?>
+      <div class="page-header-right ms-auto">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahUserModal"><i class="bi bi-plus-lg me-2" aria-hidden="true"></i>Tambah User</button>
+      </div>
+    <?php } ?>
   </div>
   <!-- [ page-header ] end -->
 
@@ -67,4 +72,5 @@ require_once("../../templates/views_top.php"); ?>
 
 </div>
 
+<?php require_once(__DIR__ . "/../../sections/tambah-user-modal.php"); ?>
 <?php require_once("../../templates/views_bottom.php") ?>

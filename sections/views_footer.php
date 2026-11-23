@@ -19,7 +19,7 @@
 <script src="<?= $baseURL ?>assets/js/theme-customizer-init.min.js"></script>
 <script src="<?= $baseURL ?>assets/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="<?= $baseURL ?>assets/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-<script src="<?= $baseURL ?>assets/js/demo/datatables-demo.js"></script>
+<script src="<?= $baseURL ?>assets/js/demo/datatables-demo.js?v=<?= filemtime(__DIR__ . "/../assets/js/demo/datatables-demo.js") ?>"></script>
 
 <script>
 const showMessage = (type, title, message) => {
