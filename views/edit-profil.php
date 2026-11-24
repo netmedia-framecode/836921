@@ -27,6 +27,7 @@ require_once("../templates/views_top.php"); ?>
                   style="width: 350px;height: 350px;object-fit: cover;">
               </div>
               <div class="col-lg-7">
+                <?php require __DIR__ . '/../sections/edit-profil-anggota.php'; ?>
                 <form action="" method="post">
                   <input type="hidden" name="id_user" value="<?= $data['id_user'] ?>">
                   <input type="hidden" name="imageOld" value="<?= $data['image'] ?>">

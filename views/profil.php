@@ -51,6 +51,16 @@ require_once("../templates/views_top.php"); ?>
                       </tr>
                     </thead>
                   </table>
+                  <?php if ($is_profile_anggota) { ?>
+                    <h5 class="mt-4">Biodata Anggota</h5>
+                    <table class="table table-sm table-borderless">
+                      <tbody>
+                        <?php foreach (['nama_lengkap'=>'Nama Lengkap', 'nik'=>'NIK', 'no_telp'=>'No. Telepon', 'alamat'=>'Alamat', 'jenis_anggota'=>'Jenis Anggota', 'tgl_gabung'=>'Tanggal Bergabung'] as $field=>$label) { ?>
+                          <tr><th><?= $label ?></th><td><?= htmlspecialchars(html_entity_decode((string)($profil_anggota[$field] ?? '-'), ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <?php } ?>
+                      </tbody>
+                    </table>
+                  <?php } ?>
                   <p class="card-text"><small class="text-muted">Terakhir diperbarui
                       <?php $date = date_create($data["updated_at"]);
                       echo date_format($date, "l, d M Y"); ?></small>
